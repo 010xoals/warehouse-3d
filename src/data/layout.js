@@ -1,24 +1,31 @@
 function createZoneBlocks(zone, zoneOffsetX = 0) {
-  return [
-    { zone, offsetX: zoneOffsetX, top: `${zone}01`, topStart: 35, topEnd: 68, bottom: `${zone}02`, bottomStart: 1, bottomEnd: 34 },
-    { zone, offsetX: zoneOffsetX, top: `${zone}02`, topStart: 68, topEnd: 35, bottom: `${zone}03`, bottomStart: 1, bottomEnd: 34 },
-    { zone, offsetX: zoneOffsetX, top: `${zone}03`, topStart: 68, topEnd: 35, bottom: `${zone}04`, bottomStart: 1, bottomEnd: 34 },
-    { zone, offsetX: zoneOffsetX, top: `${zone}04`, topStart: 68, topEnd: 35, bottom: `${zone}05`, bottomStart: 1, bottomEnd: 34 },
-    { zone, offsetX: zoneOffsetX, top: `${zone}05`, topStart: 68, topEnd: 35, bottom: `${zone}06`, bottomStart: 1, bottomEnd: 34 },
-    { zone, offsetX: zoneOffsetX, top: `${zone}06`, topStart: 68, topEnd: 35, bottom: `${zone}07`, bottomStart: 1, bottomEnd: 34 },
-    { zone, offsetX: zoneOffsetX, top: `${zone}07`, topStart: 68, topEnd: 35, bottom: `${zone}08`, bottomStart: 1, bottomEnd: 34 },
-    { zone, offsetX: zoneOffsetX, top: `${zone}08`, topStart: 68, topEnd: 35, bottom: `${zone}09`, bottomStart: 1, bottomEnd: 34 },
-    { zone, offsetX: zoneOffsetX, top: `${zone}09`, topStart: 68, topEnd: 35, bottom: `${zone}10`, bottomStart: 1, bottomEnd: 34 },
-    { zone, offsetX: zoneOffsetX, top: `${zone}10`, topStart: 68, topEnd: 35, bottom: `${zone}11`, bottomStart: 1, bottomEnd: 34 },
-    { zone, offsetX: zoneOffsetX, top: `${zone}11`, topStart: 68, topEnd: 35, bottom: `${zone}12`, bottomStart: 1, bottomEnd: 34 },
-    { zone, offsetX: zoneOffsetX, top: `${zone}12`, topStart: 68, topEnd: 35, bottom: `${zone}13`, bottomStart: 1, bottomEnd: 34 },
+  const rows = [
+    { top: `${zone}01`, topStart: 35, topEnd: 68, bottom: `${zone}02`, bottomStart: 1, bottomEnd: 34 },
+    { top: `${zone}02`, topStart: 68, topEnd: 35, bottom: `${zone}03`, bottomStart: 1, bottomEnd: 34 },
+    { top: `${zone}03`, topStart: 68, topEnd: 35, bottom: `${zone}04`, bottomStart: 1, bottomEnd: 34 },
+    { top: `${zone}04`, topStart: 68, topEnd: 35, bottom: `${zone}05`, bottomStart: 1, bottomEnd: 34 },
+    { top: `${zone}05`, topStart: 68, topEnd: 35, bottom: `${zone}06`, bottomStart: 1, bottomEnd: 34 },
+    { top: `${zone}06`, topStart: 68, topEnd: 35, bottom: `${zone}07`, bottomStart: 1, bottomEnd: 34 },
+    { top: `${zone}07`, topStart: 68, topEnd: 35, bottom: `${zone}08`, bottomStart: 1, bottomEnd: 34 },
+    { top: `${zone}08`, topStart: 68, topEnd: 35, bottom: `${zone}09`, bottomStart: 1, bottomEnd: 34 },
+    { top: `${zone}09`, topStart: 68, topEnd: 35, bottom: `${zone}10`, bottomStart: 1, bottomEnd: 34 },
+    { top: `${zone}10`, topStart: 68, topEnd: 35, bottom: `${zone}11`, bottomStart: 1, bottomEnd: 34 },
+    { top: `${zone}11`, topStart: 68, topEnd: 35, bottom: `${zone}12`, bottomStart: 1, bottomEnd: 34 },
+    { top: `${zone}12`, topStart: 68, topEnd: 35, bottom: `${zone}13`, bottomStart: 1, bottomEnd: 34 },
   ];
+
+  return rows.map((row, index) => ({
+    ...row,
+    zone,
+    offsetX: zoneOffsetX,
+    rowIndex: index,
+  }));
 }
 
 export const blocks = [
   ...createZoneBlocks("J", 0),
-  ...createZoneBlocks("K", 90),
-  ...createZoneBlocks("L", 180),
+  ...createZoneBlocks("K", 52),
+  ...createZoneBlocks("L", 104),
 ];
 
 export const levels = [

@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
+import { OrbitControls, Text } from "@react-three/drei";
 
 import RackInstances, { buildRackLayout } from "./RackInstances";
 import ClickZones from "./ClickZones";
@@ -19,23 +19,23 @@ export default function WarehouseScene({
   return (
     <Canvas
       camera={{
-        position: [5, 95, 170],
-        fov: 45,
+        position: [55, 90, 105],
+        fov: 50,
       }}
     >
       <ambientLight intensity={0.8} />
       <directionalLight position={[30, 60, 40]} intensity={2} />
 
-      <OrbitControls target={[0, 2, 160]} enableDamping />
+      <OrbitControls target={[52, 2, 50]} enableDamping />
 
       <mesh rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[90, 380]} />
+        <planeGeometry args={[180, 140]} />
         <meshStandardMaterial color="#1f2937" />
       </mesh>
 
       <gridHelper
-        args={[380, 160, "#475569", "#334155"]}
-        position={[0, 0.02, 160]}
+        args={[180, 120, "#475569", "#334155"]}
+        position={[52, 0.02, 50]}
       />
 
       <RackInstances layout={layout} />
@@ -49,6 +49,19 @@ export default function WarehouseScene({
         selectedRack={selectedRack}
         layout={layout}
       />
+      {layout.floorLabels?.map((label, i) => (
+      <Text
+       key={`floor-label-${i}`}
+       position={label.position}
+       rotation={[-Math.PI / 2, 0, 0]}
+       fontSize={label.type === "zone" ? 2.2 : 0.9}
+       color={label.color}
+       anchorX="center"
+       anchorY="middle"
+      >
+     {label.text}
+     </Text>
+     ))}
     </Canvas>
   );
 }

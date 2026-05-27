@@ -46,9 +46,23 @@ export function buildRackLayout(inventoryMap, selectedRack) {
   const sideBeams = [];
   const boundaries = [];
   const aisles = [];
+  const floorLabels = [];
 
   blocks.forEach((block, blockIndex) => {
-    const baseZ = blockIndex * RACK.blockGap;
+    if (block.rowIndex === 0) {
+       floorLabels.push({
+       type: "zone",
+       text: `${block.zone} ZONE`,
+       position: [(block.offsetX || 0), 0.08, -6],
+       color:
+       block.zone === "J"
+        ? "#22c55e"
+        : block.zone === "K"
+        ? "#2563eb"
+        : "#f97316",
+     });
+}
+    const baseZ = block.rowIndex * RACK.blockGap;
     const topZ = baseZ;
     const bottomZ = baseZ + RACK.pairGap;
     const aisleZ = baseZ + 5;
@@ -71,25 +85,34 @@ export function buildRackLayout(inventoryMap, selectedRack) {
     ];
 
     boundaries.push({
-      position: [0, 0.03, topZ - 0.95],
+      position: [(block.offsetX || 0), 0.03, topZ - 0.95],
       size: [45, 0.03, 0.05],
       color: "#facc15",
     });
 
     boundaries.push({
-      position: [0, 0.03, bottomZ + 0.95],
+      position: [(block.offsetX || 0), 0.03, bottomZ + 0.95],
       size: [45, 0.03, 0.05],
       color: "#facc15",
     });
 
     aisles.push({
-      position: [0, 0.01, aisleZ],
+      position: [(block.offsetX || 0), 0.01, aisleZ],
       size: [50, 0.02, 5.5],
       color: "#111827",
     });
 
     lines.forEach((line) => {
-      const nums =
+        floorLabels.push({
+         type: "row",
+         text: line.name.replace(line.name[0], ""),
+         position: [(block.offsetX || 0) - 26, 0.08, line.z],
+         color: "#ffffff",
+        });
+     
+     
+     
+        const nums =
         line.start <= line.end
           ? Array.from(
               { length: line.end - line.start + 1 },
@@ -176,6 +199,7 @@ export function buildRackLayout(inventoryMap, selectedRack) {
     sideBeams,
     boundaries,
     aisles,
+    floorLabels,
   };
 }
 
