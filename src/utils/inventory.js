@@ -1,75 +1,69 @@
 import * as XLSX from "xlsx";
-import {
-  collection,
-  doc,
-  getDocs,
-  writeBatch,
-  setDoc,
-  getDoc,
-} from "firebase/firestore";
 
-import { db } from "../firebase";
-
-export const inventoryCol = collection(db, "jzone_inventory");
-export const metaRef = doc(db, "jzone_meta", "latest");
+const API = "https://political-wine-listprice-altered.trycloudflare.com";
 
 export const getTotalQty = (data) =>
   Number(data?.TOTAL_QTY || 0);
 
-export async function deleteOldInventory() {
-  const snap = await getDocs(inventoryCol);
-  const docs = snap.docs;
+export async function saveInventoryToFirestore(
+  map,
+  fileName
+) {
+  const rows = [];
 
-  for (let i = 0; i < docs.length; i += 400) {
-    const batch = writeBatch(db);
-
-    docs.slice(i, i + 400).forEach((d) => {
-      batch.delete(d.ref);
+  Object.entries(map).forEach(([loc, data]) => {
+    data.items.forEach((item) => {
+      rows.push({
+        loc,
+        sku: item.SKU,
+        itemName: item.ITEM_NAME,
+        qty: item.QTY,
+      });
     });
-
-    await batch.commit();
-  }
-}
-
-export async function saveInventoryToFirestore(map, fileName) {
-  await deleteOldInventory();
-
-  const entries = Object.entries(map);
-
-  for (let i = 0; i < entries.length; i += 400) {
-    const batch = writeBatch(db);
-
-    entries.slice(i, i + 400).forEach(([loc, data]) => {
-      const ref = doc(db, "jzone_inventory", loc);
-      batch.set(ref, data);
-    });
-
-    await batch.commit();
-  }
-
-  await setDoc(metaRef, {
-    fileName,
-    updatedAt: new Date().toISOString(),
-    count: entries.length,
   });
+
+  const res = await fetch(`${API}/inventory`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(rows),
+  });
+
+  return await res.json();
 }
 
 export async function loadInventoryFromFirestore() {
-  const snap = await getDocs(inventoryCol);
+  const res = await fetch(`${API}/inventory`);
+
+  const rows = await res.json();
 
   const map = {};
 
-  snap.forEach((d) => {
-    map[d.id] = d.data();
+  rows.forEach((row) => {
+    if (!map[row.loc]) {
+      map[row.loc] = {
+        LOC: row.loc,
+        items: [],
+        TOTAL_QTY: 0,
+      };
+    }
+
+    map[row.loc].items.push({
+      SKU: row.sku,
+      ITEM_NAME: row.itemName,
+      QTY: row.qty,
+    });
+
+    map[row.loc].TOTAL_QTY += row.qty;
   });
 
-  const metaSnap = await getDoc(metaRef);
-
-  const meta = metaSnap.exists()
-    ? metaSnap.data()
-    : {};
-
-  return { map, meta };
+  return {
+    map,
+    meta: {
+      fileName: "LOCAL_DB",
+    },
+  };
 }
 
 export async function parseExcel(file) {
