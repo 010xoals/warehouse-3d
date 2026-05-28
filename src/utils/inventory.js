@@ -1,6 +1,6 @@
 import * as XLSX from "xlsx";
 
-const API = "https://political-wine-listprice-altered.trycloudflare.com";
+const API = "https://trembl-encoding-meets-significant.trycloudflare.com ";
 
 export const getTotalQty = (data) =>
   Number(data?.TOTAL_QTY || 0);
